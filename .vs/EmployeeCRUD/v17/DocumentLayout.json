@@ -1,0 +1,258 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\SajidInternship\\Dotnet\\MVC\\EmployeeCRUD\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{FB7A6FB0-39B5-4B85-8916-7C53CD50C0C0}|EmployeeCRUD\\EmployeeCRUD.csproj|d:\\sajidinternship\\dotnet\\mvc\\employeecrud\\employeecrud\\views\\employee\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{FB7A6FB0-39B5-4B85-8916-7C53CD50C0C0}|EmployeeCRUD\\EmployeeCRUD.csproj|solutionrelative:employeecrud\\views\\employee\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FB7A6FB0-39B5-4B85-8916-7C53CD50C0C0}|EmployeeCRUD\\EmployeeCRUD.csproj|d:\\sajidinternship\\dotnet\\mvc\\employeecrud\\employeecrud\\views\\_viewimports.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{FB7A6FB0-39B5-4B85-8916-7C53CD50C0C0}|EmployeeCRUD\\EmployeeCRUD.csproj|solutionrelative:employeecrud\\views\\_viewimports.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FB7A6FB0-39B5-4B85-8916-7C53CD50C0C0}|EmployeeCRUD\\EmployeeCRUD.csproj|d:\\sajidinternship\\dotnet\\mvc\\employeecrud\\employeecrud\\views\\_viewstart.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{FB7A6FB0-39B5-4B85-8916-7C53CD50C0C0}|EmployeeCRUD\\EmployeeCRUD.csproj|solutionrelative:employeecrud\\views\\_viewstart.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FB7A6FB0-39B5-4B85-8916-7C53CD50C0C0}|EmployeeCRUD\\EmployeeCRUD.csproj|d:\\sajidinternship\\dotnet\\mvc\\employeecrud\\employeecrud\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{FB7A6FB0-39B5-4B85-8916-7C53CD50C0C0}|EmployeeCRUD\\EmployeeCRUD.csproj|solutionrelative:employeecrud\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FB7A6FB0-39B5-4B85-8916-7C53CD50C0C0}|EmployeeCRUD\\EmployeeCRUD.csproj|d:\\sajidinternship\\dotnet\\mvc\\employeecrud\\employeecrud\\controllers\\employeecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FB7A6FB0-39B5-4B85-8916-7C53CD50C0C0}|EmployeeCRUD\\EmployeeCRUD.csproj|solutionrelative:employeecrud\\controllers\\employeecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FB7A6FB0-39B5-4B85-8916-7C53CD50C0C0}|EmployeeCRUD\\EmployeeCRUD.csproj|d:\\sajidinternship\\dotnet\\mvc\\employeecrud\\employeecrud\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FB7A6FB0-39B5-4B85-8916-7C53CD50C0C0}|EmployeeCRUD\\EmployeeCRUD.csproj|solutionrelative:employeecrud\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FB7A6FB0-39B5-4B85-8916-7C53CD50C0C0}|EmployeeCRUD\\EmployeeCRUD.csproj|d:\\sajidinternship\\dotnet\\mvc\\employeecrud\\employeecrud\\views\\employee\\search.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{FB7A6FB0-39B5-4B85-8916-7C53CD50C0C0}|EmployeeCRUD\\EmployeeCRUD.csproj|solutionrelative:employeecrud\\views\\employee\\search.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FB7A6FB0-39B5-4B85-8916-7C53CD50C0C0}|EmployeeCRUD\\EmployeeCRUD.csproj|d:\\sajidinternship\\dotnet\\mvc\\employeecrud\\employeecrud\\views\\employee\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{FB7A6FB0-39B5-4B85-8916-7C53CD50C0C0}|EmployeeCRUD\\EmployeeCRUD.csproj|solutionrelative:employeecrud\\views\\employee\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FB7A6FB0-39B5-4B85-8916-7C53CD50C0C0}|EmployeeCRUD\\EmployeeCRUD.csproj|d:\\sajidinternship\\dotnet\\mvc\\employeecrud\\employeecrud\\views\\employee\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{FB7A6FB0-39B5-4B85-8916-7C53CD50C0C0}|EmployeeCRUD\\EmployeeCRUD.csproj|solutionrelative:employeecrud\\views\\employee\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FB7A6FB0-39B5-4B85-8916-7C53CD50C0C0}|EmployeeCRUD\\EmployeeCRUD.csproj|d:\\sajidinternship\\dotnet\\mvc\\employeecrud\\employeecrud\\views\\employee\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{FB7A6FB0-39B5-4B85-8916-7C53CD50C0C0}|EmployeeCRUD\\EmployeeCRUD.csproj|solutionrelative:employeecrud\\views\\employee\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FB7A6FB0-39B5-4B85-8916-7C53CD50C0C0}|EmployeeCRUD\\EmployeeCRUD.csproj|d:\\sajidinternship\\dotnet\\mvc\\employeecrud\\employeecrud\\models\\employee.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FB7A6FB0-39B5-4B85-8916-7C53CD50C0C0}|EmployeeCRUD\\EmployeeCRUD.csproj|solutionrelative:employeecrud\\models\\employee.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\SajidInternship\\Dotnet\\MVC\\EmployeeCRUD\\EmployeeCRUD\\Migrations\\20251215114346_firstmigration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:EmployeeCRUD\\Migrations\\20251215114346_firstmigration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FB7A6FB0-39B5-4B85-8916-7C53CD50C0C0}|EmployeeCRUD\\EmployeeCRUD.csproj|d:\\sajidinternship\\dotnet\\mvc\\employeecrud\\employeecrud\\models\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FB7A6FB0-39B5-4B85-8916-7C53CD50C0C0}|EmployeeCRUD\\EmployeeCRUD.csproj|solutionrelative:employeecrud\\models\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FB7A6FB0-39B5-4B85-8916-7C53CD50C0C0}|EmployeeCRUD\\EmployeeCRUD.csproj|d:\\sajidinternship\\dotnet\\mvc\\employeecrud\\employeecrud\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{FB7A6FB0-39B5-4B85-8916-7C53CD50C0C0}|EmployeeCRUD\\EmployeeCRUD.csproj|solutionrelative:employeecrud\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "_ViewStart.cshtml",
+              "DocumentMoniker": "D:\\SajidInternship\\Dotnet\\MVC\\EmployeeCRUD\\EmployeeCRUD\\Views\\_ViewStart.cshtml",
+              "RelativeDocumentMoniker": "EmployeeCRUD\\Views\\_ViewStart.cshtml",
+              "ToolTip": "D:\\SajidInternship\\Dotnet\\MVC\\EmployeeCRUD\\EmployeeCRUD\\Views\\_ViewStart.cshtml",
+              "RelativeToolTip": "EmployeeCRUD\\Views\\_ViewStart.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-15T13:49:09.304Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "_ViewImports.cshtml",
+              "DocumentMoniker": "D:\\SajidInternship\\Dotnet\\MVC\\EmployeeCRUD\\EmployeeCRUD\\Views\\_ViewImports.cshtml",
+              "RelativeDocumentMoniker": "EmployeeCRUD\\Views\\_ViewImports.cshtml",
+              "ToolTip": "D:\\SajidInternship\\Dotnet\\MVC\\EmployeeCRUD\\EmployeeCRUD\\Views\\_ViewImports.cshtml",
+              "RelativeToolTip": "EmployeeCRUD\\Views\\_ViewImports.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-15T13:49:07.659Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "D:\\SajidInternship\\Dotnet\\MVC\\EmployeeCRUD\\EmployeeCRUD\\Views\\Employee\\Index.cshtml",
+              "RelativeDocumentMoniker": "EmployeeCRUD\\Views\\Employee\\Index.cshtml",
+              "ToolTip": "D:\\SajidInternship\\Dotnet\\MVC\\EmployeeCRUD\\EmployeeCRUD\\Views\\Employee\\Index.cshtml",
+              "RelativeToolTip": "EmployeeCRUD\\Views\\Employee\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-15T12:07:23.734Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "D:\\SajidInternship\\Dotnet\\MVC\\EmployeeCRUD\\EmployeeCRUD\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "EmployeeCRUD\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "D:\\SajidInternship\\Dotnet\\MVC\\EmployeeCRUD\\EmployeeCRUD\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "EmployeeCRUD\\Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-15T12:47:47.621Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Search.cshtml",
+              "DocumentMoniker": "D:\\SajidInternship\\Dotnet\\MVC\\EmployeeCRUD\\EmployeeCRUD\\Views\\Employee\\Search.cshtml",
+              "RelativeDocumentMoniker": "EmployeeCRUD\\Views\\Employee\\Search.cshtml",
+              "ToolTip": "D:\\SajidInternship\\Dotnet\\MVC\\EmployeeCRUD\\EmployeeCRUD\\Views\\Employee\\Search.cshtml",
+              "RelativeToolTip": "EmployeeCRUD\\Views\\Employee\\Search.cshtml",
+              "ViewState": "AgIAABIAAAAAAAAAAAAcwCgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-15T12:14:06.863Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "D:\\SajidInternship\\Dotnet\\MVC\\EmployeeCRUD\\EmployeeCRUD\\Views\\Employee\\Create.cshtml",
+              "RelativeDocumentMoniker": "EmployeeCRUD\\Views\\Employee\\Create.cshtml",
+              "ToolTip": "D:\\SajidInternship\\Dotnet\\MVC\\EmployeeCRUD\\EmployeeCRUD\\Views\\Employee\\Create.cshtml",
+              "RelativeToolTip": "EmployeeCRUD\\Views\\Employee\\Create.cshtml",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAcwBAAAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-15T12:08:18.954Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\SajidInternship\\Dotnet\\MVC\\EmployeeCRUD\\EmployeeCRUD\\Program.cs",
+              "RelativeDocumentMoniker": "EmployeeCRUD\\Program.cs",
+              "ToolTip": "D:\\SajidInternship\\Dotnet\\MVC\\EmployeeCRUD\\EmployeeCRUD\\Program.cs",
+              "RelativeToolTip": "EmployeeCRUD\\Program.cs",
+              "ViewState": "AgIAABAAAAAAAAAAAAAAABkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-15T11:32:48.8Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "EmployeeController.cs",
+              "DocumentMoniker": "D:\\SajidInternship\\Dotnet\\MVC\\EmployeeCRUD\\EmployeeCRUD\\Controllers\\EmployeeController.cs",
+              "RelativeDocumentMoniker": "EmployeeCRUD\\Controllers\\EmployeeController.cs",
+              "ToolTip": "D:\\SajidInternship\\Dotnet\\MVC\\EmployeeCRUD\\EmployeeCRUD\\Controllers\\EmployeeController.cs",
+              "RelativeToolTip": "EmployeeCRUD\\Controllers\\EmployeeController.cs",
+              "ViewState": "AgIAABIAAAAAAAAAAAA1wCgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-15T11:49:06.551Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Delete.cshtml",
+              "DocumentMoniker": "D:\\SajidInternship\\Dotnet\\MVC\\EmployeeCRUD\\EmployeeCRUD\\Views\\Employee\\Delete.cshtml",
+              "RelativeDocumentMoniker": "EmployeeCRUD\\Views\\Employee\\Delete.cshtml",
+              "ToolTip": "D:\\SajidInternship\\Dotnet\\MVC\\EmployeeCRUD\\EmployeeCRUD\\Views\\Employee\\Delete.cshtml",
+              "RelativeToolTip": "EmployeeCRUD\\Views\\Employee\\Delete.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-15T12:13:21.045Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Edit.cshtml",
+              "DocumentMoniker": "D:\\SajidInternship\\Dotnet\\MVC\\EmployeeCRUD\\EmployeeCRUD\\Views\\Employee\\Edit.cshtml",
+              "RelativeDocumentMoniker": "EmployeeCRUD\\Views\\Employee\\Edit.cshtml",
+              "ToolTip": "D:\\SajidInternship\\Dotnet\\MVC\\EmployeeCRUD\\EmployeeCRUD\\Views\\Employee\\Edit.cshtml",
+              "RelativeToolTip": "EmployeeCRUD\\Views\\Employee\\Edit.cshtml",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAcwCUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-15T12:11:44.753Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "20251215114346_firstmigration.cs",
+              "DocumentMoniker": "D:\\SajidInternship\\Dotnet\\MVC\\EmployeeCRUD\\EmployeeCRUD\\Migrations\\20251215114346_firstmigration.cs",
+              "RelativeDocumentMoniker": "EmployeeCRUD\\Migrations\\20251215114346_firstmigration.cs",
+              "ToolTip": "D:\\SajidInternship\\Dotnet\\MVC\\EmployeeCRUD\\EmployeeCRUD\\Migrations\\20251215114346_firstmigration.cs",
+              "RelativeToolTip": "EmployeeCRUD\\Migrations\\20251215114346_firstmigration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-15T11:43:47.628Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Employee.cs",
+              "DocumentMoniker": "D:\\SajidInternship\\Dotnet\\MVC\\EmployeeCRUD\\EmployeeCRUD\\Models\\Employee.cs",
+              "RelativeDocumentMoniker": "EmployeeCRUD\\Models\\Employee.cs",
+              "ToolTip": "D:\\SajidInternship\\Dotnet\\MVC\\EmployeeCRUD\\EmployeeCRUD\\Models\\Employee.cs",
+              "RelativeToolTip": "EmployeeCRUD\\Models\\Employee.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-15T11:18:44.783Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\SajidInternship\\Dotnet\\MVC\\EmployeeCRUD\\EmployeeCRUD\\appsettings.json",
+              "RelativeDocumentMoniker": "EmployeeCRUD\\appsettings.json",
+              "ToolTip": "D:\\SajidInternship\\Dotnet\\MVC\\EmployeeCRUD\\EmployeeCRUD\\appsettings.json",
+              "RelativeToolTip": "EmployeeCRUD\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-12-15T11:32:11.479Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "AppDbContext.cs",
+              "DocumentMoniker": "D:\\SajidInternship\\Dotnet\\MVC\\EmployeeCRUD\\EmployeeCRUD\\Models\\AppDbContext.cs",
+              "RelativeDocumentMoniker": "EmployeeCRUD\\Models\\AppDbContext.cs",
+              "ToolTip": "D:\\SajidInternship\\Dotnet\\MVC\\EmployeeCRUD\\EmployeeCRUD\\Models\\AppDbContext.cs",
+              "RelativeToolTip": "EmployeeCRUD\\Models\\AppDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-15T11:21:06.155Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

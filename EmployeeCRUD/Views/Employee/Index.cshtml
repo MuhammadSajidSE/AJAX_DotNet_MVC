@@ -1,0 +1,122 @@
+﻿@model IEnumerable<EmployeeCRUD.Models.Employee>
+@using Microsoft.AspNetCore.Mvc.Rendering
+@{
+    var employeeToEdit = ViewBag.EmployeeToEdit as EmployeeCRUD.Models.Employee;
+    var searchString = ViewBag.SearchString as string;
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Employee Management</h2>
+
+    <!-- Card for Form -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            @if (employeeToEdit != null)
+            {
+                <span>Edit Employee</span>
+            }
+            else
+            {
+                <span>Add New Employee</span>
+            }
+        </div>
+        <div class="card-body">
+            <form method="post" asp-action="@((employeeToEdit != null) ? "EditConfirmed" : "Add")">
+                @if (employeeToEdit != null)
+                {
+                    <input type="hidden" name="id" value="@employeeToEdit.id" />
+                }
+
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-2">
+                        <label class="form-label">Name</label>
+                        <input class="form-control" name="name" value="@employeeToEdit?.name" required />
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Contact</label>
+                        <input class="form-control" name="contact" value="@employeeToEdit?.contact" required />
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Department</label>
+                        <input class="form-control" name="department" value="@employeeToEdit?.department" required />
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Gender</label>
+                        <select class="form-select" name="Gender" required>
+                            <option value="">Select Gender</option>
+                            <option value="Male" selected="@(employeeToEdit?.Gender == "Male" ? "selected" : null)">Male</option>
+                            <option value="Female" selected="@(employeeToEdit?.Gender == "Female" ? "selected" : null)">Female</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 d-flex">
+                        <button type="submit" class="btn btn-success me-2 align-self-end">
+                            @((employeeToEdit != null) ? "Confirm Edit" : "Add Employee")
+                        </button>
+                        @if (employeeToEdit != null)
+                        {
+                            <a asp-action="Index" class="btn btn-secondary align-self-end">Cancel</a>
+                        }
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Search Form -->
+    <div class="mb-3">
+        <form method="get" asp-action="Index" class="d-flex">
+            <input type="text" name="searchString" class="form-control me-2" placeholder="Search by Name" value="@searchString" />
+            <button type="submit" class="btn btn-outline-primary">Search</button>
+        </form>
+    </div>
+
+    <!-- Table -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white">
+            Employee List
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Contact</th>
+                        <th>Department</th>
+                        <th>Gender</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Any())
+                    {
+                        @foreach (var emp in Model)
+                        {
+                            <tr>
+                                <td>@emp.id</td>
+                                <td>@emp.name</td>
+                                <td>@emp.contact</td>
+                                <td>@emp.department</td>
+                                <td>@emp.Gender</td>
+                                <td>
+                                    <a asp-action="Index" asp-route-editId="@emp.id" class="btn btn-sm btn-primary me-1">Edit</a>
+                                    <a asp-action="Delete" asp-route-id="@emp.id" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center">No employees found</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

@@ -1,0 +1,37 @@
+﻿@model EmployeeCRUD.Models.Employee
+
+<h2>Edit Employee</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="id" />
+    <div>
+        <label>Name</label>
+        <input asp-for="name" />
+        <span asp-validation-for="name" style="color:red"></span>
+    </div>
+    <div>
+        <label>Contact</label>
+        <input asp-for="contact" />
+        <span asp-validation-for="contact" style="color:red"></span>
+    </div>
+    <div>
+        <label>Department</label>
+        <input asp-for="department" />
+        <span asp-validation-for="department" style="color:red"></span>
+    </div>
+    <div>
+        <label>Gender</label>
+        <select asp-for="Gender">
+            <option value="">Select Gender</option>
+            <option value="Male" selected="@Model.Gender == " Male"">Male</option>
+            <option value="Female" selected="@Model.Gender == " Female"">Female</option>
+        </select>
+        <span asp-validation-for="Gender" style="color:red"></span>
+    </div>
+    <button type="submit">Update</button>
+    <a asp-action="Index">Back</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
