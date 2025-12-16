@@ -1,0 +1,25 @@
+﻿@model IEnumerable<EmployeeCRUD.Models.Employee>
+
+@if (Model.Any())
+{
+    foreach (var emp in Model)
+    {
+        <tr id="emp_@emp.id">
+            <td>@emp.id</td>
+            <td>@emp.name</td>
+            <td>@emp.contact</td>
+            <td>@emp.department</td>
+            <td>@emp.Gender</td>
+            <td>
+                <button class="btn btn-sm btn-primary me-1 editBtn" data-id="@emp.id">Edit</button>
+                <button class="btn btn-sm btn-danger deleteBtn" data-id="@emp.id">Delete</button>
+            </td>
+        </tr>
+    }
+}
+else
+{
+    <tr>
+        <td colspan="6" class="text-center">No employees found</td>
+    </tr>
+}
