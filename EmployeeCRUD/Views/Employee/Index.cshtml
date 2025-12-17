@@ -113,7 +113,6 @@
 
     <script>
         $(function () {
-            // Get anti-forgery token
             var token = $('input[name="__RequestVerificationToken"]').val();
 
             // Validate form before submission
@@ -203,61 +202,84 @@
             }
 
             // EDIT
-            $(document).on("click", ".editBtn", function () {
-                var employeeId = $(this).data("id");
-                $.get("/Employee/Get", { id: employeeId }, function (emp) {
+        $(document).on("click", ".editBtn", function () {
+            var employeeId = $(this).data("id"); 
+
+            $.ajax({
+                url: "/Employee/Get",        
+                type: "GET",                
+                data: { id: employeeId },    
+                success: function(emp) {    
                     if (emp) {
+                        // Fill the form with employee data
                         $("#empId").val(emp.id);
                         $("#name").val(emp.name);
                         $("#contact").val(emp.contact);
                         $("#department").val(emp.department);
                         $("#Gender").val(emp.gender);
+
+                        // Change button and title for editing
                         $("#submitBtn").text("Update Employee");
                         $("#formTitle").text("Edit Employee");
+
+                        // Reset any previous validation highlights
                         resetFormValidation();
                     }
-                }).fail(function() {
-                    alert("Error loading employee data.");
-                });
+                },
+                error: function(xhr, status, error) { 
+                    alert("Error loading employee data: " + error);
+                }
             });
+        });
+
 
             // DELETE
-            $(document).on("click", ".deleteBtn", function () {
-                if (!confirm("Are you sure you want to delete this employee?")) return;
+        $(document).on("click", ".deleteBtn", function () {
+            if (!confirm("Are you sure you want to delete this employee?")) return;
 
-                let id = $(this).data("id");
-                $.ajax({
-                    url: "/Employee/Delete",
-                    type: "POST",
-                    data: { id: id },
-                    headers: {
-                        'RequestVerificationToken': token
-                    },
-                    success: function () {
-                        $("#emp_" + id).remove();
-                        showSuccessMessage("Employee deleted successfully!");
-                    },
-                    error: function (xhr) {
-                        alert("Error deleting employee: " + xhr.statusText);
-                    }
-                });
+            let id = $(this).data("id");
+            $.ajax({
+                url: "/Employee/Delete",
+                type: "POST",
+                data: { id: id },
+                headers: {
+                    'RequestVerificationToken': token
+                },
+                success: function () {
+                    $("#emp_" + id).remove();
+                    showSuccessMessage("Employee deleted successfully!");
+                },
+                error: function (xhr) {
+                    alert("Error deleting employee: " + xhr.statusText);
+                }
             });
+        });
+
 
             // SEARCH
-            $("#searchBox").on("keyup", function () {
-                var searchTerm = $(this).val().trim();
+        $("#searchBox").on("keyup", function () {
+            var searchTerm = $(this).val().trim(); 
 
-                if (searchTerm.length === 0) {
-                    loadAllEmployees();
-                    return;
+          
+            if (searchTerm.length === 0) {
+                loadAllEmployees();
+                return;
+            }
+
+            // Full AJAX call
+            $.ajax({
+                url: "/Employee/Search",   
+                type: "GET",              
+                data: { q: searchTerm },   
+                success: function(data) {  
+                    renderEmployeeTable(data); 
+                },
+                error: function(xhr, status, error) { 
+                    alert("Error searching employees: " + error);
                 }
-
-                $.get("/Employee/Search", { q: searchTerm }, function (data) {
-                    renderEmployeeTable(data);
-                }).fail(function() {
-                    alert("Error searching employees.");
-                });
             });
+        });
+
 
             // Reset search
             $("#resetSearchBtn").click(function() {
@@ -295,13 +317,19 @@
             }
 
             // Helper function to load all employees
-            function loadAllEmployees() {
-                $.get("/Employee/GetAll", function (data) {
-                    renderEmployeeTable(data);
-                }).fail(function() {
-                    alert("Error loading employees.");
-                });
-            }
+        function loadAllEmployees() {
+            $.ajax({
+                url: "/Employee/GetAll",   
+                type: "GET",               
+                success: function(data) {  
+                    renderEmployeeTable(data); 
+                },
+                error: function(xhr, status, error) { // Called if request fails
+                    alert("Error loading employees: " + error);
+                }
+            });
+        }
+
 
             // Helper function to show success message
             function showSuccessMessage(message) {
@@ -319,6 +347,5 @@
             });
         });
     </script>
-
 </body>
 </html>
