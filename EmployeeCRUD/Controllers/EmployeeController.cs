@@ -18,9 +18,16 @@ namespace EmployeeCRUD.Controllers
         // PAGE LOAD
         public async Task<IActionResult> Index()
         {
+            // For AJAX requests, return the partial view
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                var employees = await _context.Employees.ToListAsync();
+                return PartialView("_EmployeePartial", employees);
+            }
+
+            // For regular requests, return the full view
             return View(await _context.Employees.ToListAsync());
         }
-
         // ADD
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -63,12 +70,10 @@ namespace EmployeeCRUD.Controllers
 
             var existingEmployee = await _context.Employees.FindAsync(employee.id);
             if (existingEmployee == null) return NotFound();
-
             existingEmployee.name = employee.name;
             existingEmployee.contact = employee.contact;
             existingEmployee.department = employee.department;
             existingEmployee.Gender = employee.Gender;
-
             await _context.SaveChangesAsync();
             return Json(existingEmployee);
         }

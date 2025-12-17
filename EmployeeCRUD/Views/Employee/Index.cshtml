@@ -18,7 +18,7 @@
 
 <body class="container mt-4">
 
-    <div class="card">
+    <div class="card ">
         <div class="card-header">
             <h3 id="formTitle">Add Employee</h3>
         </div>
@@ -259,8 +259,6 @@
             // SEARCH
         $("#searchBox").on("keyup", function () {
             var searchTerm = $(this).val().trim(); 
-
-          
             if (searchTerm.length === 0) {
                 loadAllEmployees();
                 return;

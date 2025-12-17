@@ -1,0 +1,405 @@
+﻿@model IEnumerable<EmployeeCRUD.Models.Employee>
+
+<!-- Add Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h3 class="mb-0">Employee Management System</h3>
+        <button class="btn btn-outline-secondary" onclick="goBackToLogin()">
+            <i class="fas fa-arrow-left"></i> Back to Login
+        </button>
+    </div>
+</div>
+
+<!-- Employee CRUD Section -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body p-4">
+        <h4 class="card-title mb-4" id="formTitle">Add New Employee</h4>
+        <form id="employeeForm">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" id="empId" value="0" />
+
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Name *</label>
+                    <input class="form-control" name="name" id="name" required />
+                    <div class="invalid-feedback">Please enter a name.</div>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Contact *</label>
+                    <input class="form-control" name="contact" id="contact" required />
+                    <div class="invalid-feedback">Please enter contact information.</div>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Department *</label>
+                    <input class="form-control" name="department" id="department" required />
+                    <div class="invalid-feedback">Please enter a department.</div>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Gender *</label>
+                    <select class="form-select" name="Gender" id="Gender" required>
+                        <option value="">-- Select Gender --</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                    <div class="invalid-feedback">Please select a gender.</div>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" id="submitBtn" class="btn btn-success">
+                    <i class="fas fa-plus"></i> Add Employee
+                </button>
+                <button type="button" id="resetBtn" class="btn btn-secondary">
+                    <i class="fas fa-redo"></i> Reset Form
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Search Section -->
+<div class="row mb-3">
+    <div class="col-md-6">
+        <div class="input-group">
+            <span class="input-group-text">
+                <i class="fas fa-search"></i>
+            </span>
+            <input type="text" id="searchBox" class="form-control" placeholder="Search employees by name...">
+        </div>
+    </div>
+    <div class="col-md-6 text-end">
+        <button id="resetSearchBtn" class="btn btn-outline-secondary">
+            <i class="fas fa-times"></i> Clear Search
+        </button>
+    </div>
+</div>
+
+<!-- Employees Table -->
+<div class="table-responsive">
+    <table class="table table-bordered table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Contact</th>
+                <th>Department</th>
+                <th>Gender</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="employeeTableBody">
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var e in Model)
+                {
+                    <tr id="emp_@e.id">
+                        <td>@e.id</td>
+                        <td>@e.name</td>
+                        <td>@e.contact</td>
+                        <td>@e.department</td>
+                        <td>@e.Gender</td>
+                        <td>
+                            <button class="btn btn-sm btn-primary editBtn" data-id="@e.id">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="btn btn-sm btn-danger deleteBtn" data-id="@e.id">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="6" class="text-center">No employees found</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    // Function to go back to login page
+    function goBackToLogin() {
+        // Show loading indicator
+        $("#accountContainer").html(`
+            <div class="text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2">Loading Login...</p>
+            </div>
+        `);
+
+        // Load login page via AJAX
+        $.ajax({
+            url: "/Account/Login",
+            type: "GET",
+            success: function (data) {
+                $("#accountContainer").html(data);
+                // Update browser URL (optional)
+                history.pushState(null, null, "/Account");
+            },
+            error: function() {
+                $("#accountContainer").html(`
+                    <div class="alert alert-danger">
+                        Failed to load login page.
+                        <button class="btn btn-sm btn-primary mt-2" onclick="goBackToLogin()">Retry</button>
+                    </div>
+                `);
+            }
+        });
+    }
+
+    // Initialize Employee Page JavaScript
+    $(document).ready(function() {
+        initializeEmployeePage();
+    });
+
+    function initializeEmployeePage() {
+        var token = $('input[name="__RequestVerificationToken"]').val();
+
+        // Validate form before submission
+        function validateForm() {
+            let isValid = true;
+            $('#employeeForm').find('input[required], select[required]').each(function() {
+                if (!$(this).val().trim()) {
+                    $(this).addClass('is-invalid');
+                    isValid = false;
+                } else {
+                    $(this).removeClass('is-invalid');
+                }
+            });
+            return isValid;
+        }
+
+        // Reset form validation
+        function resetFormValidation() {
+            $('#employeeForm').find('input, select').removeClass('is-invalid');
+        }
+
+        // ADD / UPDATE
+        $("#employeeForm").submit(function (e) {
+            e.preventDefault();
+
+            if (!validateForm()) {
+                alert("Please fill in all required fields.");
+                return;
+            }
+
+            var id = $("#empId").val();
+            var url = id && id != "0" ? "/Employee/Edit" : "/Employee/Add";
+            var method = "POST";
+
+            // Show loading on button
+            var originalText = $("#submitBtn").html();
+            $("#submitBtn").prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Processing...');
+
+            $.ajax({
+                url: url,
+                type: method,
+                data: $(this).serialize(),
+                headers: {
+                    'RequestVerificationToken': token
+                },
+                success: function (emp) {
+                    if (!id || id == "0") {
+                        // Add new employee
+                        $("#employeeTableBody").append(`
+                            <tr id="emp_${emp.id}">
+                                <td>${emp.id}</td>
+                                <td>${emp.name}</td>
+                                <td>${emp.contact}</td>
+                                <td>${emp.department}</td>
+                                <td>${emp.gender}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary editBtn" data-id="${emp.id}">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <button class="btn btn-sm btn-danger deleteBtn" data-id="${emp.id}">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        `);
+                        alert("Employee added successfully!");
+                    } else {
+                        // Update existing employee
+                        var row = $("#emp_" + emp.id);
+                        row.find("td:eq(1)").text(emp.name);
+                        row.find("td:eq(2)").text(emp.contact);
+                        row.find("td:eq(3)").text(emp.department);
+                        row.find("td:eq(4)").text(emp.gender);
+                        alert("Employee updated successfully!");
+                    }
+
+                    resetForm();
+                },
+                error: function (xhr) {
+                    if (xhr.status === 400) {
+                        alert("Validation Error: " + xhr.responseText);
+                    } else {
+                        alert("An error occurred: " + xhr.statusText);
+                    }
+                },
+                complete: function() {
+                    $("#submitBtn").prop('disabled', false).html(originalText);
+                }
+            });
+        });
+
+        // Reset form function
+        function resetForm() {
+            $("#employeeForm")[0].reset();
+            $("#empId").val("0");
+            $("#submitBtn").html('<i class="fas fa-plus"></i> Add Employee');
+            $("#formTitle").text("Add New Employee");
+            resetFormValidation();
+        }
+
+        // EDIT
+        $(document).on("click", ".editBtn", function () {
+            var employeeId = $(this).data("id");
+
+            $.ajax({
+                url: "/Employee/Get",
+                type: "GET",
+                data: { id: employeeId },
+                success: function(emp) {
+                    if (emp) {
+                        // Fill the form with employee data
+                        $("#empId").val(emp.id);
+                        $("#name").val(emp.name);
+                        $("#contact").val(emp.contact);
+                        $("#department").val(emp.department);
+                        $("#Gender").val(emp.gender);
+
+                        // Change button and title for editing
+                        $("#submitBtn").html('<i class="fas fa-save"></i> Update Employee');
+                        $("#formTitle").text("Edit Employee");
+
+                        // Reset any previous validation highlights
+                        resetFormValidation();
+                    }
+                },
+                error: function(xhr) {
+                    alert("Error loading employee data: " + xhr.responseText);
+                }
+            });
+        });
+
+        // DELETE
+        $(document).on("click", ".deleteBtn", function () {
+            if (!confirm("Are you sure you want to delete this employee?")) return;
+
+            let id = $(this).data("id");
+            $.ajax({
+                url: "/Employee/Delete",
+                type: "POST",
+                data: { id: id },
+                headers: {
+                    'RequestVerificationToken': token
+                },
+                success: function () {
+                    $("#emp_" + id).remove();
+                    alert("Employee deleted successfully!");
+                },
+                error: function (xhr) {
+                    alert("Error deleting employee: " + xhr.statusText);
+                }
+            });
+        });
+
+        // SEARCH
+        $("#searchBox").on("keyup", function () {
+            var searchTerm = $(this).val().trim();
+            if (searchTerm.length === 0) {
+                loadAllEmployees();
+                return;
+            }
+
+            $.ajax({
+                url: "/Employee/Search",
+                type: "GET",
+                data: { q: searchTerm },
+                success: function(data) {
+                    renderEmployeeTable(data);
+                },
+                error: function(xhr) {
+                    alert("Error searching employees: " + xhr.responseText);
+                }
+            });
+        });
+
+        // Reset search
+        $("#resetSearchBtn").click(function() {
+            $("#searchBox").val("");
+            loadAllEmployees();
+        });
+
+        // Reset form button
+        $("#resetBtn").click(function() {
+            resetForm();
+        });
+
+        // Helper function to render employee table
+        function renderEmployeeTable(data) {
+            let rows = "";
+            if (data && data.length > 0) {
+                $.each(data, function (_, e) {
+                    rows += `
+                        <tr id="emp_${e.id}">
+                            <td>${e.id}</td>
+                            <td>${e.name}</td>
+                            <td>${e.contact}</td>
+                            <td>${e.department}</td>
+                            <td>${e.gender}</td>
+                            <td>
+                                <button class="btn btn-sm btn-primary editBtn" data-id="${e.id}">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn btn-sm btn-danger deleteBtn" data-id="${e.id}">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </td>
+                        </tr>`;
+                });
+            } else {
+                rows = `<tr><td colspan="6" class="text-center">No employees found</td></tr>`;
+            }
+            $("#employeeTableBody").html(rows);
+        }
+
+        // Helper function to load all employees
+        function loadAllEmployees() {
+            $.ajax({
+                url: "/Employee/GetAll",
+                type: "GET",
+                success: function(data) {
+                    renderEmployeeTable(data);
+                },
+                error: function(xhr) {
+                    alert("Error loading employees: " + xhr.responseText);
+                }
+            });
+        }
+
+        // Initialize form validation on blur
+        $('#employeeForm').find('input[required], select[required]').on('blur', function() {
+            if (!$(this).val().trim()) {
+                $(this).addClass('is-invalid');
+            } else {
+                $(this).removeClass('is-invalid');
+            }
+        });
+
+        // Focus on first input when form loads
+        $("#name").focus();
+    }
+</script>

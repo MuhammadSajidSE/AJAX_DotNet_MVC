@@ -11,5 +11,7 @@ namespace EmployeeCRUD.Models
         {
         }
         public DbSet<Employee> Employees { get; set; }
+        public DbSet<AppUser> AppUsers { get; set; }
+
     }
 }
