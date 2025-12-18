@@ -1,6 +1,6 @@
 ﻿namespace EmployeeCRUD.Models
 {
-    public class AppUser
+    public class RegisterModel
     {
         public int Id { get; set; }
         public string Username { get; set; }

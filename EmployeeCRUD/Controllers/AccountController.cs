@@ -1,4 +1,6 @@
 ﻿using EmployeeCRUD.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,11 +9,18 @@ namespace EmployeeCRUD.Controllers
     public class AccountController : Controller
     {
         private readonly AppDbContext _context;
-        public AccountController(AppDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+
+        public AccountController(
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            AppDbContext context)
         {
+            _userManager = userManager;
+            _signInManager = signInManager;
             _context = context;
         }
-
         public IActionResult Index()
         {
             return View();
@@ -28,78 +37,61 @@ namespace EmployeeCRUD.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register([FromBody] AppUser user)
+        public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
-            try
-            {
-                if (user == null)
-                {
-                    return Json(new { success = false, message = "Invalid user data" });
-                }
-                var existingUser = await _context.AppUsers
-                    .FirstOrDefaultAsync(u => u.Email == user.Email);
+            if (!ModelState.IsValid)
+                return Json(new { success = false, message = "Invalid data" });
 
-                if (existingUser != null)
-                {
-                    return Json(new { success = false, message = "Email already exists!" });
-                }
-                _context.AppUsers.Add(user);
-                await _context.SaveChangesAsync();
-
-                return Json(new
-                {
-                    success = true,
-                    message = "Registration successful!",
-                    user = new
-                    {
-                        id = user.Id,
-                        name = user.Username,
-                        email = user.Email
-                    }
-                });
-            }
-            catch (Exception ex)
+            var user = new ApplicationUser
             {
-                return Json(new { success = false, message = "An error occurred: " + ex.Message });
-            }
+                UserName = model.Email,
+                Email = model.Email,
+                FullName = model.Username
+            };
+
+            var result = await _userManager.CreateAsync(user, model.Password);
+
+            if (!result.Succeeded)
+                return Json(new { success = false, message = result.Errors.First().Description });
+
+            await _signInManager.SignInAsync(user, isPersistent: false);
+
+            return Json(new
+            {
+                success = true,
+                redirectUrl = "/Employee"
+            });
         }
+
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
-            try
+            if (!ModelState.IsValid)
+                return Json(new { success = false, message = "Invalid data" });
+
+            var result = await _signInManager.PasswordSignInAsync(
+                model.Email,
+                model.Password,
+                false,
+                true
+            );
+
+            if (!result.Succeeded)
+                return Json(new { success = false, message = "Invalid email or password" });
+
+            return Json(new
             {
-                if (model == null || string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Password))
-                {
-                    return Json(new { success = false, message = "Email and password are required" });
-                }
-
-                var user = await _context.AppUsers
-                    .FirstOrDefaultAsync(u => u.Email == model.Email && u.Password == model.Password);
-
-                if (user == null)
-                {
-                    return Json(new { success = false, message = "Invalid email or password!" });
-                }
-
-                return Json(new
-                {
-                    success = true,
-                    message = "Login successful!",
-                    user = new
-                    {
-                        id = user.Id,
-                        name = user.Username,
-                        email = user.Email
-                    }
-                });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = "An error occurred: " + ex.Message });
-            }
+                success = true,
+                redirectUrl = "/Employee"
+            });
         }
-
-
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Account");
+        }
         public IActionResult CheckAuth()
         {
             return Json(new { isAuthenticated = true });

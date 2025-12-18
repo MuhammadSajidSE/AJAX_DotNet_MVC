@@ -33,12 +33,14 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 // Configure cookie settings
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = "/Account/Login";
-    options.LogoutPath = "/Account/Logout";
+    options.LoginPath = "/Account";
+    options.LogoutPath = "/Account";
     options.AccessDeniedPath = "/Account/AccessDenied";
     options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
     options.SlidingExpiration = true;
 });
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

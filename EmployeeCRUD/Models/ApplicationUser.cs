@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EmployeeCRUD.Models
 {
     public class ApplicationUser : IdentityUser
     {
-        public string? FirstName { get; set; }
-        public string? LastName { get; set; }
+        public string FullName { get; set; }
+
     }
 }
 

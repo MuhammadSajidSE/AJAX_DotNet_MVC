@@ -4,6 +4,7 @@ using EmployeeCRUD.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmployeeCRUD.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251218134431_againset")]
+    partial class againset
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -133,7 +136,8 @@ namespace EmployeeCRUD.Migrations
 
                     b.HasKey("id");
 
-                    b.HasIndex("departmentId");
+                    b.HasIndex("departmentId")
+                        .IsUnique();
 
                     b.ToTable("Employees");
                 });
@@ -274,8 +278,8 @@ namespace EmployeeCRUD.Migrations
             modelBuilder.Entity("EmployeeCRUD.Models.Employee", b =>
                 {
                     b.HasOne("EmployeeCRUD.Models.Department", "Department")
-                        .WithMany()
-                        .HasForeignKey("departmentId")
+                        .WithOne("Employee")
+                        .HasForeignKey("EmployeeCRUD.Models.Employee", "departmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -331,6 +335,11 @@ namespace EmployeeCRUD.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("EmployeeCRUD.Models.Department", b =>
+                {
+                    b.Navigation("Employee");
                 });
 #pragma warning restore 612, 618
         }

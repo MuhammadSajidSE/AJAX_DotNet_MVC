@@ -83,17 +83,12 @@
             });
         }
         function loadEmployeePage() {
-            // Check if user is logged in
             var currentUser = localStorage.getItem("currentUser");
             if (!currentUser) {
-                // User is not logged in → load login form
                 loadLoginPartial();
                 return;
             }
-
-            // User is logged in → load employee page
             $("#accountContainer").removeClass("col-md-6 col-lg-5").addClass("col-12");
-
             $.ajax({
                 url: "/Employee",
                 type: "GET",
@@ -102,10 +97,16 @@
                     history.pushState({ page: "employee" }, "Employee Management", "/Employee");
                 },
                 error: function (xhr, status, error) {
-                    console.error("Error loading employee page:", error);
-                    showError("Failed to load employee page. Please try again.", function() {
+                    if (xhr.status === 401 || xhr.status === 302) {
+                        localStorage.removeItem("currentUser");
                         loadLoginPartial();
-                    });
+                        showError("Your session has expired. Please log in again.");
+                    } else {
+                        console.error("Error loading employee page:", error);
+                        showError("Failed to load employee page. Please try again.", function() {
+                            loadLoginPartial();
+                        });
+                    }
                 }
             });
         }

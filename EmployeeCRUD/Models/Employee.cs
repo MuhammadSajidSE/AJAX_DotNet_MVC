@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EmployeeCRUD.Models
 {
@@ -9,8 +10,11 @@ namespace EmployeeCRUD.Models
         public string name { get; set; }
         [Required]
         public string contact { get; set; }
-        [Required]
-        public string department { get; set; }
+        public int departmentId { get; set; }
+
+        // Navigation property to Department
+        [ForeignKey("departmentId")]
+        public Department? Department { get; set; }
         [Required]
         public string Gender { get; set; }
     }
