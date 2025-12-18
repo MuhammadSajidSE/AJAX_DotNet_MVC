@@ -1,5 +1,4 @@
-﻿@* Views/Account/_LoginPartial.cshtml *@
-<div class="card shadow-sm">
+﻿<div class="card shadow-sm">
     <div class="card-body p-4">
         <h2 class="card-title text-center mb-4">Login</h2>
         <form id="loginForm">
@@ -9,7 +8,7 @@
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password" name="password" placeholder="Enter a password" required>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
             </div>
             <button type="submit" class="btn btn-primary w-100">Login</button>
         </form>
@@ -20,3 +19,44 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+        $("#loginForm").submit(function(e) {
+            e.preventDefault();
+
+            var email = $("#email").val().trim();
+            var password = $("#password").val().trim();
+            if (!email || !password) {
+                alert("Please fill in all fields");
+                return false;
+            }
+            var loginData = {
+                Email: email,
+                Password: password
+            };
+            $.ajax({
+                url: "/Account/Login",
+                type: "POST",
+                contentType: "application/json", 
+                data: JSON.stringify(loginData),  
+                success: function(response) {
+                    if (response.success) {
+                        localStorage.setItem("currentUser", JSON.stringify(response.user));
+                        loadEmployeePage();
+                    } else {
+                        alert(response.message);
+                        submitBtn.prop('disabled', false).html(originalText);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error:", error);
+                    alert("An error occurred. Please try again.");
+                    submitBtn.prop('disabled', false).html(originalText);
+                }
+            });
+
+            return false;
+        });
+    });
+</script>

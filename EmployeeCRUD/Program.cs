@@ -39,7 +39,6 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
     options.SlidingExpiration = true;
 });
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

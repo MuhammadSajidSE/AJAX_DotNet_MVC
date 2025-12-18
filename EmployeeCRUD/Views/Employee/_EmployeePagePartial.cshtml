@@ -1,18 +1,30 @@
 ﻿@model IEnumerable<EmployeeCRUD.Models.Employee>
+@{
+    Layout = null;
+}
 
-<!-- Add Font Awesome for icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-<div class="card mb-4">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h3 class="mb-0">Employee Management System</h3>
-        <button class="btn btn-outline-secondary" onclick="goBackToLogin()">
-            <i class="fas fa-arrow-left"></i> Back to Login
+<!-- User Info and Logout Button -->
+<div class="row mb-3">
+    <div class="col-md-8">
+        <div id="userInfo" class="alert alert-info py-2" style="display: none;">
+            Welcome, <span id="userName"></span> | <span id="userEmail"></span>
+        </div>
+    </div>
+    <div class="col-md-4 text-end">
+        <button id="logoutBtn" class="btn btn-danger">
+            <i class="fas fa-sign-out-alt"></i> Logout
         </button>
     </div>
 </div>
 
-<!-- Employee CRUD Section -->
+<!-- Header Card -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h3 class="mb-0">Employee Management System</h3>
+    </div>
+</div>
+
+<!-- Employee CRUD Card -->
 <div class="card shadow-sm mb-4">
     <div class="card-body p-4">
         <h4 class="card-title mb-4" id="formTitle">Add New Employee</h4>
@@ -125,41 +137,57 @@
 </div>
 
 <script>
-    // Function to go back to login page
-    function goBackToLogin() {
-        // Show loading indicator
-        $("#accountContainer").html(`
-            <div class="text-center">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-                <p class="mt-2">Loading Login...</p>
-            </div>
-        `);
-
-        // Load login page via AJAX
-        $.ajax({
-            url: "/Account/Login",
-            type: "GET",
-            success: function (data) {
-                $("#accountContainer").html(data);
-                // Update browser URL (optional)
-                history.pushState(null, null, "/Account");
-            },
-            error: function() {
-                $("#accountContainer").html(`
-                    <div class="alert alert-danger">
-                        Failed to load login page.
-                        <button class="btn btn-sm btn-primary mt-2" onclick="goBackToLogin()">Retry</button>
-                    </div>
-                `);
+    // Check if user is logged in
+    function checkUserLoggedIn() {
+        var user = localStorage.getItem("currentUser");
+        if (!user) {
+            // If accessed directly without login
+            if ($("#accountContainer").length === 0) {
+                // Redirect to login page if accessed directly
+                window.location.href = "/Account";
+            } else {
+                // If in Account page via AJAX, show login
+                loadLoginPartial();
             }
-        });
+            return null;
+        }
+        return JSON.parse(user);
+    }
+
+    // Logout function
+    function logout() {
+        localStorage.removeItem("currentUser");
+        if ($("#accountContainer").length > 0) {
+            // If in Account page, reload login
+            loadLoginPartial();
+        } else {
+            // If in direct Employee page, redirect
+            window.location.href = "/Account";
+        }
     }
 
     // Initialize Employee Page JavaScript
     $(document).ready(function() {
+        // Check authentication
+        var currentUser = checkUserLoggedIn();
+        if (!currentUser) {
+            return; // Stop execution if not logged in
+        }
+
+        // Display user information
+        $("#userInfo").show();
+        $("#userName").text(currentUser.name);
+        $("#userEmail").text(currentUser.email);
+
+        // Initialize employee page functionality
         initializeEmployeePage();
+
+        // Logout button click event
+        $("#logoutBtn").click(function() {
+            if (confirm("Are you sure you want to logout?")) {
+                logout();
+            }
+        });
     });
 
     function initializeEmployeePage() {
@@ -228,7 +256,7 @@
                                 </td>
                             </tr>
                         `);
-                        alert("Employee added successfully!");
+                        showSuccessMessage("Employee added successfully!");
                     } else {
                         // Update existing employee
                         var row = $("#emp_" + emp.id);
@@ -236,7 +264,7 @@
                         row.find("td:eq(2)").text(emp.contact);
                         row.find("td:eq(3)").text(emp.department);
                         row.find("td:eq(4)").text(emp.gender);
-                        alert("Employee updated successfully!");
+                        showSuccessMessage("Employee updated successfully!");
                     }
 
                     resetForm();
@@ -308,7 +336,7 @@
                 },
                 success: function () {
                     $("#emp_" + id).remove();
-                    alert("Employee deleted successfully!");
+                    showSuccessMessage("Employee deleted successfully!");
                 },
                 error: function (xhr) {
                     alert("Error deleting employee: " + xhr.statusText);
@@ -388,6 +416,22 @@
                     alert("Error loading employees: " + xhr.responseText);
                 }
             });
+        }
+
+        // Helper function to show success message
+        function showSuccessMessage(message) {
+            // Create a temporary success alert
+            const alertDiv = $('<div class="alert alert-success alert-dismissible fade show position-fixed" style="top: 20px; right: 20px; z-index: 9999;">' +
+                message +
+                '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>' +
+                '</div>');
+
+            $('body').append(alertDiv);
+
+            // Auto remove after 3 seconds
+            setTimeout(function() {
+                alertDiv.alert('close');
+            }, 3000);
         }
 
         // Initialize form validation on blur

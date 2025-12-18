@@ -1,11 +1,10 @@
-﻿@* Views/Account/_SignUpPartial.cshtml *@
-<div class="card shadow-sm">
+﻿<div class="card shadow-sm">
     <div class="card-body p-4">
         <h2 class="card-title text-center mb-4">Sign Up</h2>
-        <form id="signUpForm">
+        <form id="signupForm">
             <div class="mb-3">
                 <label for="name" class="form-label">Name</label>
-                <input type="text" class="form-control" id="name" name="name" placeholder="Enter your full name" required>
+                <input type="text" class="form-control" id="name" name="username" placeholder="Enter your name" required>
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
@@ -24,3 +23,52 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+        $("#signupForm").submit(function(e) {
+            e.preventDefault();
+
+            var name = $("#name").val().trim();
+            var email = $("#email").val().trim();
+            var password = $("#password").val().trim();
+
+            if (!name || !email || !password) {
+                alert("Please fill in all fields");
+                return false;
+            }
+
+            if (password.length < 6) {
+                alert("Password must be at least 6 characters long");
+                return false;
+            }
+            var userData = {
+                Username: name,  
+                Email: email,    
+                Password: password  
+            };
+            $.ajax({
+                url: "/Account/Register",
+                type: "POST",
+                contentType: "application/json", 
+                data: JSON.stringify(userData),  
+                success: function(response) {
+                    if (response.success) {
+                        localStorage.setItem("currentUser", JSON.stringify(response.user));
+                        loadEmployeePage();
+                    } else {
+                        alert(response.message);
+                        submitBtn.prop('disabled', false).html(originalText);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error:", error);
+                    alert("An error occurred. Please try again.");
+                    submitBtn.prop('disabled', false).html(originalText);
+                }
+            });
+
+            return false;
+        });
+    });
+</script>

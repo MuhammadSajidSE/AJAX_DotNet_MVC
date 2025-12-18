@@ -15,19 +15,25 @@ namespace EmployeeCRUD.Controllers
             _context = context;
         }
 
-        // PAGE LOAD
         public async Task<IActionResult> Index()
         {
-            // For AJAX requests, return the partial view
+            var employees = await _context.Employees.ToListAsync();
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
-                var employees = await _context.Employees.ToListAsync();
-                return PartialView("_EmployeePartial", employees);
+                return PartialView("_EmployeePagePartial", employees);
             }
-
-            // For regular requests, return the full view
-            return View(await _context.Employees.ToListAsync());
+            return View(employees);
         }
+
+        // GET FOR EDIT
+        [HttpGet]
+        public async Task<IActionResult> Get(int id)
+        {
+            var emp = await _context.Employees.FindAsync(id);
+            if (emp == null) return NotFound();
+            return Json(emp);
+        }
+
         // ADD
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -44,15 +50,6 @@ namespace EmployeeCRUD.Controllers
             _context.Employees.Add(employee);
             await _context.SaveChangesAsync();
             return Json(employee);
-        }
-
-        // GET FOR EDIT
-        [HttpGet]
-        public async Task<IActionResult> Get(int id)
-        {
-            var emp = await _context.Employees.FindAsync(id);
-            if (emp == null) return NotFound();
-            return Json(emp);
         }
 
         // UPDATE
