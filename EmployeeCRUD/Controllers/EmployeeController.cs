@@ -182,6 +182,5 @@ namespace EmployeeCRUD.Controllers
             return Json(employees);
         }
 
- 
     }
 }
