@@ -360,10 +360,24 @@
 
             $("#resetBtn").click(resetForm);
 
-            // Logout button
-            $("#logoutBtn").click(function() {
-                window.location.href = "/Account/Logout";
+        $("#logoutBtn").click(function() {
+            $.ajax({
+                url: "/Account/Logout",
+                type: "POST",
+                headers: {
+                    'RequestVerificationToken': getToken(),
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                success: function() {
+                    window.location.href = "/Account/Index";
+                },
+                error: function(xhr, status, error) {
+                    console.error("Logout error:", error);
+                    window.location.href = "/Account/Index";
+                }
             });
+        });
 
             // Initial load
             loadAllEmployees();

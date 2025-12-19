@@ -25,12 +25,9 @@ namespace EmployeeCRUD.Controllers
             var user = await _userManager.GetUserAsync(User);
             ViewBag.FullName = user?.FullName;
 
-            // Load departments for dropdown
             ViewBag.Departments = await _context.Departments.ToListAsync();
-
-            // Load employees with department information
             var employees = await _context.Employees
-                .Include(e => e.Department)  // Include Department navigation property
+                .Include(e => e.Department) 
                 .ToListAsync();
 
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
@@ -49,8 +46,6 @@ namespace EmployeeCRUD.Controllers
                 .FirstOrDefaultAsync(e => e.id == id);
 
             if (emp == null) return NotFound();
-
-            // Return JSON with department info
             return Json(new
             {
                 emp.id,
@@ -74,14 +69,10 @@ namespace EmployeeCRUD.Controllers
                     .Select(e => e.ErrorMessage);
                 return BadRequest(new { message = string.Join(" | ", errors) });
             }
-
-            // Clear the Department navigation property to avoid errors
             employee.Department = null;
 
             _context.Employees.Add(employee);
             await _context.SaveChangesAsync();
-
-            // Get the department name for the response
             var department = await _context.Departments.FindAsync(employee.departmentId);
 
             return Json(new
@@ -107,19 +98,13 @@ namespace EmployeeCRUD.Controllers
                     .Select(e => e.ErrorMessage);
                 return BadRequest(new { message = string.Join(" | ", errors) });
             }
-
             var existingEmployee = await _context.Employees.FindAsync(employee.id);
             if (existingEmployee == null) return NotFound();
-
-            // Update only the fields we want to change
             existingEmployee.name = employee.name;
             existingEmployee.contact = employee.contact;
             existingEmployee.departmentId = employee.departmentId;
             existingEmployee.Gender = employee.Gender;
-
             await _context.SaveChangesAsync();
-
-            // Get the updated employee with department
             var updatedEmp = await _context.Employees
                 .Include(e => e.Department)
                 .FirstOrDefaultAsync(e => e.id == employee.id);
@@ -196,5 +181,7 @@ namespace EmployeeCRUD.Controllers
 
             return Json(employees);
         }
+
+ 
     }
 }
