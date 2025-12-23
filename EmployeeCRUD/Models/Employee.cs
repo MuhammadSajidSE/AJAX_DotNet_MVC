@@ -16,5 +16,9 @@ namespace EmployeeCRUD.Models
         public Department? Department { get; set; }
         [Required]
         public string Gender { get; set; }
+        public string? ImagePath { get; set; }
+        // NotMapped property for file upload
+        [NotMapped]
+        public IFormFile? ImageFile { get; set; }
     }
 }

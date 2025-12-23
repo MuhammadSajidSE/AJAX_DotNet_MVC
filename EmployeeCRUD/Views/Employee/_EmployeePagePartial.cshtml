@@ -1,7 +1,6 @@
 ﻿@model IEnumerable<EmployeeCRUD.Models.Employee>
 @{
     Layout = null;
-    // Get departments for dropdown from ViewBag
     var departments = ViewBag.Departments as List<EmployeeCRUD.Models.Department>;
 }
 
@@ -18,13 +17,126 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .employee-table tbody tr:hover {
+            background-color: #f5f5f5;
+            cursor: pointer;
+        }
+
+        .modal-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .required-field::after {
+            content: " *";
+            color: red;
+        }
+
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        body {
+            overflow-x: hidden;
+        }
+
+        .employee-image {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .image-preview {
+            max-width: 150px;
+            max-height: 150px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        /* Table with fixed header and scrollable body */
+        .table-wrapper {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .table-scroll {
+            max-height: 400px; /* Adjust this value based on your needs */
+            overflow-y: auto;
+        }
+
+            .table-scroll table {
+                margin-bottom: 0;
+            }
+
+            .table-scroll thead {
+                position: sticky;
+                top: 0;
+                z-index: 10;
+            }
+
+                .table-scroll thead th {
+                    background-color: #343a40;
+                    color: white;
+                    border-bottom: 2px solid #dee2e6;
+                }
+
+        /* Pagination styles */
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding: 10px 0;
+        }
+
+        .pagination-info {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .pagination .page-link {
+            color: #007bff;
+            border: 1px solid #dee2e6;
+            margin: 0 2px;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: white;
+        }
+
+        .pagination .page-item.disabled .page-link {
+            color: #6c757d;
+        }
+
+        /* Row number styling */
+        .row-number {
+            font-weight: bold;
+            color: #666;
+            width: 40px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
     <div class="container mt-4">
+        <!-- Toast Container -->
+        <div class="toast-container"></div>
+
         <!-- User Info and Logout Button -->
         <div class="row mb-3">
             <div class="col-md-8">
-                <div id="userInfo" class="alert alert-info py-2">
+                <div id="userInfo" class="alert alert-info py-2 mb-0">
                     Welcome, <strong>@ViewBag.FullName</strong>
                 </div>
             </div>
@@ -37,67 +149,86 @@
 
         <!-- Header Card -->
         <div class="card mb-4">
-            <div class="card-header">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 <h3 class="mb-0">Employee Management System</h3>
+                <button type="button" class="btn btn-success me-2" id="exportExcelBtn">
+                    <i class="fas fa-file-excel"></i> Export to Excel
+                </button>
+                <button type="button" class="btn btn-primary" id="addEmployeeBtn">
+                    <i class="fas fa-plus"></i> Add New Employee
+                </button>
             </div>
         </div>
 
-        <!-- Employee CRUD Card -->
-        <div class="card shadow-sm mb-4">
-            <div class="card-body p-4">
-                <h4 class="card-title mb-4" id="formTitle">Add New Employee</h4>
-                <form id="employeeForm" method="post">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" name="id" id="empId" value="0" />
-
-                    <div class="row g-3">
-                        <div class="col-md-3">
-                            <label class="form-label">Name *</label>
-                            <input class="form-control" name="name" id="name" required />
-                            <div class="invalid-feedback">Please enter a name.</div>
-                        </div>
-
-                        <div class="col-md-3">
-                            <label class="form-label">Contact *</label>
-                            <input class="form-control" name="contact" id="contact" required />
-                            <div class="invalid-feedback">Please enter contact information.</div>
-                        </div>
-
-                        <div class="col-md-3">
-                            <label class="form-label">Department *</label>
-                            <select class="form-select" name="departmentId" id="departmentId" required>
-                                <option value="">-- Select Department --</option>
-                                @if (departments != null)
-                                {
-                                    @foreach (var dept in departments)
-                                    {
-                                        <option value="@dept.Id">@dept.DeparmentName</option>
-                                    }
-                                }
-                            </select>
-                            <div class="invalid-feedback">Please select a department.</div>
-                        </div>
-
-                        <div class="col-md-3">
-                            <label class="form-label">Gender *</label>
-                            <select class="form-select" name="Gender" id="Gender" required>
-                                <option value="">-- Select Gender --</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                            </select>
-                            <div class="invalid-feedback">Please select a gender.</div>
-                        </div>
+        <!-- Employee Modal -->
+        <div class="modal fade" id="employeeModal" tabindex="-1" aria-labelledby="employeeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="employeeModalLabel">Add New Employee</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
+                    <div class="modal-body">
+                        <form id="employeeForm" method="post" enctype="multipart/form-data">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" id="empId" value="0" />
 
-                    <div class="mt-4">
-                        <button type="submit" id="submitBtn" class="btn btn-success">
-                            <i class="fas fa-plus"></i> Add Employee
-                        </button>
-                        <button type="button" id="resetBtn" class="btn btn-secondary">
-                            <i class="fas fa-redo"></i> Reset Form
-                        </button>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label required-field">Name</label>
+                                    <input class="form-control" name="name" id="name" required />
+                                    <div class="invalid-feedback">Please enter a name.</div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label required-field">Contact</label>
+                                    <input class="form-control" name="contact" id="contact" required />
+                                    <div class="invalid-feedback">Please enter contact information.</div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label required-field">Department</label>
+                                    <select class="form-select" name="departmentId" id="departmentId" required>
+                                        <option value="">-- Select Department --</option>
+                                        @if (departments != null)
+                                        {
+                                            @foreach (var dept in departments)
+                                            {
+                                                <option value="@dept.Id">@dept.DeparmentName</option>
+                                            }
+                                        }
+                                    </select>
+                                    <div class="invalid-feedback">Please select a department.</div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label required-field">Gender</label>
+                                    <select class="form-select" name="Gender" id="Gender" required>
+                                        <option value="">-- Select Gender --</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                    </select>
+                                    <div class="invalid-feedback">Please select a gender.</div>
+                                </div>
+
+                                <!-- Image Upload Field -->
+                                <div class="col-md-12">
+                                    <label class="form-label">Profile Image</label>
+                                    <input type="file" class="form-control" name="ImageFile" id="imageFile"
+                                           accept=".jpg,.jpeg,.png,.gif" />
+                                    <small class="text-muted">Max file size: 5MB. Allowed formats: JPG, PNG, GIF</small>
+                                    <div class="mt-2" id="imagePreviewContainer" style="display: none;">
+                                        <img id="imagePreview" src="#" alt="Image Preview" class="image-preview" />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                </form>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" id="submitBtn" class="btn btn-success">Add Employee</button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -118,49 +249,85 @@
             </div>
         </div>
 
-        <!-- Employees Table -->
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped table-hover">
-                <thead class="table-dark">
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Contact</th>
-                        <th>Department</th>
-                        <th>Gender</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="employeeTableBody">
-                    @if (Model != null && Model.Any())
-                    {
-                        @foreach (var e in Model)
+        <!-- Employees Table with Scroll -->
+        <div class="table-wrapper">
+            <div class="table-scroll">
+                <table class="table table-bordered table-striped table-hover employee-table mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="row-number">#</th>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Contact</th>
+                            <th>Department</th>
+                            <th>Gender</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="employeeTableBody">
+                        @if (Model != null && Model.Any())
                         {
-                            <tr id="emp_@e.id">
-                                <td>@e.id</td>
-                                <td>@e.name</td>
-                                <td>@e.contact</td>
-                                <td>@(e.Department?.DeparmentName ?? "N/A")</td>
-                                <td>@e.Gender</td>
-                                <td>
-                                    <button class="btn btn-sm btn-primary editBtn" data-id="@e.id">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </button>
-                                    <button class="btn btn-sm btn-danger deleteBtn" data-id="@e.id">
-                                        <i class="fas fa-trash"></i> Delete
-                                    </button>
-                                </td>
+                            var rowNumber = 1;
+                            @foreach (var e in Model)
+                            {
+                                <tr id="emp_@e.id">
+                                    <td class="row-number">@(rowNumber++)</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(e.ImagePath))
+                                        {
+                                            <img src="@e.ImagePath" alt="Employee Image" class="employee-image" />
+                                        }
+                                        else
+                                        {
+                                            <img src="/images/default-avatar.png" alt="Default" class="employee-image" />
+                                        }
+                                    </td>
+                                    <td>@e.name</td>
+                                    <td>@e.contact</td>
+                                    <td>@(e.Department?.DeparmentName ?? "N/A")</td>
+                                    <td>@e.Gender</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary editBtn" data-id="@e.id">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <button class="btn btn-sm btn-danger deleteBtn" data-id="@e.id">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center">No employees found</td>
                             </tr>
                         }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="6" class="text-center">No employees found</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="pagination-container">
+            <div class="pagination-info" id="paginationInfo">
+                Showing <span id="startIndex">0</span> to <span id="endIndex">0</span> of <span id="totalRecords">0</span> records
+            </div>
+            <nav aria-label="Page navigation">
+                <ul class="pagination" id="pagination">
+                    <li class="page-item disabled" id="prevPage">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#" data-page="1">1</a></li>
+                    <li class="page-item" id="nextPage">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </div>
 
@@ -169,8 +336,40 @@
 
     <script>
         $(document).ready(function () {
+            // Initialize variables for pagination
+            let currentPage = 1;
+            let pageSize = 5; // Number of records per page
+            let allEmployees = [];
+            let filteredEmployees = [];
+            let isSearching = false;
 
-            // Get the anti-forgery token from the form
+            // Initialize Bootstrap modal
+            let employeeModal = null;
+
+            // Function to show modal
+            function showModal() {
+                if (employeeModal) {
+                    employeeModal.show();
+                } else {
+                    const modalElement = document.getElementById('employeeModal');
+                    employeeModal = new bootstrap.Modal(modalElement);
+                    employeeModal.show();
+                }
+            }
+
+            // Function to hide modal
+            function hideModal() {
+                if (employeeModal) {
+                    employeeModal.hide();
+                    setTimeout(() => {
+                        $('.modal-backdrop').remove();
+                        $('body').removeClass('modal-open');
+                        $('body').css('padding-right', '');
+                    }, 300);
+                }
+            }
+
+            // Get the anti-forgery token
             function getToken() {
                 return $('input[name="__RequestVerificationToken"]').val();
             }
@@ -179,113 +378,300 @@
             function resetForm() {
                 $("#employeeForm")[0].reset();
                 $("#empId").val("0");
-                $("#submitBtn").html('<i class="fas fa-plus"></i> Add Employee');
-                $("#formTitle").text("Add New Employee");
+                $("#submitBtn").text('Add Employee');
+                $("#employeeModalLabel").text("Add New Employee");
                 $("#employeeForm").find('input, select').removeClass('is-invalid');
+                $("#imagePreviewContainer").hide();
+                $("#imagePreview").attr('src', '#');
+                $('.invalid-feedback').hide();
             }
 
-            // Show success message
+            // Show toast message
+            function showToast(message, type = 'success') {
+                $('.toast').toast('dispose');
+                $('.toast').remove();
+
+                const toastId = 'toast_' + Date.now();
+                const bgClass = type === 'success' ? 'bg-success' : 'bg-danger';
+                const toastHtml = `
+                    <div id="${toastId}" class="toast align-items-center text-white ${bgClass} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                ${message}
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                    </div>
+                `;
+
+                $('.toast-container').append(toastHtml);
+                const toastElement = document.getElementById(toastId);
+                const toast = new bootstrap.Toast(toastElement, {
+                    animation: true,
+                    autohide: true,
+                    delay: 3000
+                });
+                toast.show();
+
+                toastElement.addEventListener('hidden.bs.toast', function () {
+                    $(this).remove();
+                });
+            }
+
             function showSuccessMessage(msg) {
-                const alertDiv = $(`<div class="alert alert-success alert-dismissible fade show position-fixed" style="top:20px; right:20px; z-index:9999;">${msg}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>`);
-                $('body').append(alertDiv);
-                setTimeout(() => { alertDiv.alert('close'); }, 3000);
+                showToast(msg, 'success');
             }
 
-            // Render employee table
-            function renderEmployeeTable(data) {
+            function showErrorMessage(msg) {
+                showToast(msg, 'danger');
+            }
+
+            // Calculate pagination
+            function getPagedData(data, page, size) {
+                const startIndex = (page - 1) * size;
+                const endIndex = Math.min(startIndex + size, data.length);
+                return {
+                    data: data.slice(startIndex, endIndex),
+                    startIndex: startIndex + 1,
+                    endIndex: endIndex,
+                    total: data.length,
+                    totalPages: Math.ceil(data.length / size)
+                };
+            }
+
+            // Update pagination controls
+            function updatePagination(totalPages, currentPage) {
+                const $pagination = $('#pagination');
+                const $prevPage = $('#prevPage');
+                const $nextPage = $('#nextPage');
+
+                // Update previous button
+                if (currentPage === 1) {
+                    $prevPage.addClass('disabled');
+                } else {
+                    $prevPage.removeClass('disabled');
+                }
+
+                // Update next button
+                if (currentPage === totalPages) {
+                    $nextPage.addClass('disabled');
+                } else {
+                    $nextPage.removeClass('disabled');
+                }
+
+                // Update page numbers
+                const pageNumbers = [];
+                const maxVisiblePages = 5;
+
+                if (totalPages <= maxVisiblePages) {
+                    for (let i = 1; i <= totalPages; i++) {
+                        pageNumbers.push(i);
+                    }
+                } else {
+                    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+                    let endPage = startPage + maxVisiblePages - 1;
+
+                    if (endPage > totalPages) {
+                        endPage = totalPages;
+                        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+                    }
+
+                    for (let i = startPage; i <= endPage; i++) {
+                        pageNumbers.push(i);
+                    }
+                }
+
+                // Clear existing page numbers (except prev/next)
+                $pagination.find('.page-item:not(#prevPage):not(#nextPage)').remove();
+
+                // Add page numbers
+                const $prevLink = $prevPage.find('.page-link');
+                $prevLink.after(function() {
+                    let pageHtml = '';
+                    pageNumbers.forEach(page => {
+                        const activeClass = page === currentPage ? 'active' : '';
+                        pageHtml += `
+                            <li class="page-item ${activeClass}">
+                                <a class="page-link" href="#" data-page="${page}">${page}</a>
+                            </li>
+                        `;
+                    });
+                    return pageHtml;
+                });
+            }
+
+            // Update pagination info
+            function updatePaginationInfo(start, end, total) {
+                $('#startIndex').text(start);
+                $('#endIndex').text(end);
+                $('#totalRecords').text(total);
+            }
+
+            // Render employee table with pagination
+            function renderEmployeeTable(data, page = 1) {
+                const pagedData = getPagedData(data, page, pageSize);
+
                 let rows = '';
-                if (data && data.length > 0) {
-                    data.forEach(e => {
+                if (pagedData.data && pagedData.data.length > 0) {
+                    let rowNumber = pagedData.startIndex;
+                    pagedData.data.forEach(e => {
+                        const imageHtml = e.imagePath
+                            ? `<img src="${e.imagePath}" alt="Employee Image" class="employee-image" />`
+                            : `<img src="/images/default-avatar.png" alt="Default" class="employee-image" />`;
+
                         rows += `<tr id="emp_${e.id}">
-                                    <td>${e.id}</td>
+                                    <td class="row-number">${rowNumber++}</td>
+                                    <td>${imageHtml}</td>
                                     <td>${e.name}</td>
                                     <td>${e.contact}</td>
                                     <td>${e.departmentName || 'N/A'}</td>
                                     <td>${e.gender}</td>
                                     <td>
-                                        <button class="btn btn-sm btn-primary editBtn" data-id="${e.id}"><i class="fas fa-edit"></i> Edit</button>
-                                        <button class="btn btn-sm btn-danger deleteBtn" data-id="${e.id}"><i class="fas fa-trash"></i> Delete</button>
+                                        <button class="btn btn-sm btn-primary editBtn" data-id="${e.id}">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <button class="btn btn-sm btn-danger deleteBtn" data-id="${e.id}">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
                                     </td>
                                 </tr>`;
                     });
                 } else {
-                    rows = `<tr><td colspan="6" class="text-center">No employees found</td></tr>`;
+                    rows = `<tr><td colspan="7" class="text-center">No employees found</td></tr>`;
                 }
+
                 $("#employeeTableBody").html(rows);
+                updatePagination(pagedData.totalPages, page);
+                updatePaginationInfo(pagedData.startIndex, pagedData.endIndex, pagedData.total);
+                currentPage = page;
             }
 
             // Load all employees
-            function loadAllEmployees() {
+            function loadAllEmployees(page = 1) {
                 $.get("/Employee/GetAll", function(data) {
-                    renderEmployeeTable(data);
+                    allEmployees = data;
+                    filteredEmployees = [...allEmployees];
+                    renderEmployeeTable(filteredEmployees, page);
+                }).fail(function(xhr) {
+                    showErrorMessage("Error loading employees: " + xhr.responseText);
                 });
             }
 
-            // Add/Edit employee
-            $("#employeeForm").submit(function(e) {
-                e.preventDefault();
-
-                // Simple validation
+            // Form validation
+            function validateForm() {
                 let valid = true;
-                $(this).find('input[required], select[required]').each(function() {
-                    if (!$(this).val()) {
-                        $(this).addClass('is-invalid');
+                const requiredFields = ['#name', '#contact', '#departmentId', '#Gender'];
+
+                requiredFields.forEach(field => {
+                    const $field = $(field);
+                    if (!$field.val()) {
+                        $field.addClass('is-invalid');
+                        $field.next('.invalid-feedback').show();
                         valid = false;
                     } else {
-                        $(this).removeClass('is-invalid');
+                        $field.removeClass('is-invalid');
+                        $field.next('.invalid-feedback').hide();
                     }
                 });
-                if (!valid) {
-                    alert("Please fill all required fields.");
+
+                return valid;
+            }
+
+            // Image preview
+            $("#imageFile").change(function() {
+                const file = this.files[0];
+                if (file) {
+                    // Validate file size (max 5MB)
+                    if (file.size > 5 * 1024 * 1024) {
+                        showErrorMessage("File size should not exceed 5MB");
+                        $(this).val('');
+                        return;
+                    }
+
+                    // Validate file type
+                    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                    if (!allowedTypes.includes(file.type)) {
+                        showErrorMessage("Only JPG, PNG and GIF files are allowed");
+                        $(this).val('');
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        $("#imagePreview").attr('src', e.target.result);
+                        $("#imagePreviewContainer").show();
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    $("#imagePreviewContainer").hide();
+                }
+            });
+
+            // Add/Edit employee
+            $("#submitBtn").click(function() {
+                if (!validateForm()) {
                     return;
                 }
 
                 const id = $("#empId").val();
                 const url = id && id != "0" ? "/Employee/Edit" : "/Employee/Add";
 
-                // Create employee data object
-                const employeeData = {
-                    id: $("#empId").val(),
-                    name: $("#name").val(),
-                    contact: $("#contact").val(),
-                    departmentId: parseInt($("#departmentId").val()),
-                    Gender: $("#Gender").val()
-                };
+                // Create FormData for file upload
+                const formData = new FormData();
+                formData.append('id', id);
+                formData.append('name', $("#name").val());
+                formData.append('contact', $("#contact").val());
+                formData.append('departmentId', $("#departmentId").val());
+                formData.append('Gender', $("#Gender").val());
+
+                // Append file if selected
+                const imageFile = $("#imageFile")[0].files[0];
+                if (imageFile) {
+                    formData.append('ImageFile', imageFile);
+                }
 
                 $.ajax({
                     url: url,
                     type: "POST",
-                    contentType: "application/json",
-                    data: JSON.stringify(employeeData),
+                    data: formData,
+                    processData: false,
+                    contentType: false,
                     headers: {
-                        'RequestVerificationToken': getToken(),
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
+                        'RequestVerificationToken': getToken()
                     },
                     success: function(emp) {
                         if (!id || id == "0") {
                             // Added new employee
-                            $("#employeeTableBody").append(`<tr id="emp_${emp.id}">
-                                <td>${emp.id}</td>
-                                <td>${emp.name}</td>
-                                <td>${emp.contact}</td>
-                                <td>${emp.departmentName || 'N/A'}</td>
-                                <td>${emp.gender}</td>
-                                <td>
-                                    <button class="btn btn-sm btn-primary editBtn" data-id="${emp.id}"><i class="fas fa-edit"></i> Edit</button>
-                                    <button class="btn btn-sm btn-danger deleteBtn" data-id="${emp.id}"><i class="fas fa-trash"></i> Delete</button>
-                                </td>
-                            </tr>`);
+                            allEmployees.unshift(emp); // Add to beginning of array
+                            filteredEmployees = isSearching ? [...allEmployees] : [...allEmployees];
+                            if (isSearching) {
+                                // Apply search filter if searching
+                                const q = $("#searchBox").val().trim();
+                                if (q) {
+                                    filteredEmployees = allEmployees.filter(e =>
+                                        e.name.toLowerCase().includes(q.toLowerCase())
+                                    );
+                                }
+                            }
                             showSuccessMessage("Employee added successfully!");
                         } else {
                             // Updated existing employee
-                            const row = $("#emp_" + emp.id);
-                            row.find("td:eq(1)").text(emp.name);
-                            row.find("td:eq(2)").text(emp.contact);
-                            row.find("td:eq(3)").text(emp.departmentName || 'N/A');
-                            row.find("td:eq(4)").text(emp.gender);
+                            const index = allEmployees.findIndex(e => e.id == emp.id);
+                            if (index !== -1) {
+                                allEmployees[index] = emp;
+                                const filteredIndex = filteredEmployees.findIndex(e => e.id == emp.id);
+                                if (filteredIndex !== -1) {
+                                    filteredEmployees[filteredIndex] = emp;
+                                }
+                            }
                             showSuccessMessage("Employee updated successfully!");
                         }
+
+                        // Render table with current page
+                        renderEmployeeTable(filteredEmployees, currentPage);
+
+                        // Close modal and reset form
+                        hideModal();
                         resetForm();
                     },
                     error: function(xhr, status, error) {
@@ -296,12 +682,12 @@
                         } catch (e) {
                             errorMessage = xhr.responseText || error;
                         }
-                        alert("Error: " + errorMessage);
+                        showErrorMessage("Error: " + errorMessage);
                     }
                 });
             });
 
-            // Edit button
+            // Edit button - populate modal with employee data
             $(document).on("click", ".editBtn", function() {
                 const id = $(this).data("id");
                 $.get("/Employee/Get", { id: id }, function(emp) {
@@ -310,10 +696,25 @@
                     $("#contact").val(emp.contact);
                     $("#departmentId").val(emp.departmentId);
                     $("#Gender").val(emp.gender);
-                    $("#submitBtn").html('<i class="fas fa-save"></i> Update Employee');
-                    $("#formTitle").text("Edit Employee");
+                    $("#submitBtn").text('Update Employee');
+                    $("#employeeModalLabel").text("Edit Employee");
+
+                    // Show current image if exists
+                    if (emp.imagePath) {
+                        $("#imagePreview").attr('src', emp.imagePath);
+                        $("#imagePreviewContainer").show();
+                    } else {
+                        $("#imagePreviewContainer").hide();
+                    }
+
+                    // Clear validation
+                    $("#employeeForm").find('input, select').removeClass('is-invalid');
+                    $('.invalid-feedback').hide();
+
+                    // Show modal
+                    showModal();
                 }).fail(function(xhr) {
-                    alert("Error loading employee: " + xhr.responseText);
+                    showErrorMessage("Error loading employee: " + xhr.responseText);
                 });
             });
 
@@ -328,16 +729,21 @@
                     contentType: "application/json",
                     headers: { 'RequestVerificationToken': getToken() },
                     success: function() {
-                        $("#emp_" + id).remove();
-                        showSuccessMessage("Employee deleted successfully!");
+                        // Remove from arrays
+                        allEmployees = allEmployees.filter(e => e.id != id);
+                        filteredEmployees = filteredEmployees.filter(e => e.id != id);
 
-                        // If table becomes empty, show no records message
-                        if ($("#employeeTableBody tr").length === 0) {
-                            $("#employeeTableBody").html('<tr><td colspan="6" class="text-center">No employees found</td></tr>');
+                        // Adjust page if current page becomes empty
+                        const pagedData = getPagedData(filteredEmployees, currentPage, pageSize);
+                        if (pagedData.data.length === 0 && currentPage > 1) {
+                            currentPage = Math.max(1, currentPage - 1);
                         }
+
+                        renderEmployeeTable(filteredEmployees, currentPage);
+                        showSuccessMessage("Employee deleted successfully!");
                     },
                     error: function(xhr) {
-                        alert("Error deleting employee: " + xhr.responseText);
+                        showErrorMessage("Error deleting employee: " + xhr.responseText);
                     }
                 });
             });
@@ -345,39 +751,116 @@
             // Search
             $("#searchBox").on("keyup", function() {
                 const q = $(this).val().trim();
-                if (!q) return loadAllEmployees();
-                $.get("/Employee/Search", { q: q }, function(data) {
-                    renderEmployeeTable(data);
-                }).fail(function(xhr) {
-                    alert("Error searching: " + xhr.responseText);
-                });
+                isSearching = q.length > 0;
+
+                if (!q) {
+                    filteredEmployees = [...allEmployees];
+                    renderEmployeeTable(filteredEmployees, 1);
+                    return;
+                }
+
+                // Filter employees locally
+                const filtered = allEmployees.filter(e =>
+                    e.name.toLowerCase().includes(q.toLowerCase())
+                );
+                filteredEmployees = filtered;
+                renderEmployeeTable(filteredEmployees, 1);
             });
 
             $("#resetSearchBtn").click(function() {
                 $("#searchBox").val("");
-                loadAllEmployees();
+                isSearching = false;
+                filteredEmployees = [...allEmployees];
+                renderEmployeeTable(filteredEmployees, 1);
             });
 
-            $("#resetBtn").click(resetForm);
+            // Pagination click handler
+            $(document).on('click', '.page-link', function(e) {
+                e.preventDefault();
+                const $this = $(this);
+                const page = $this.data('page');
 
-        $("#logoutBtn").click(function() {
-            $.ajax({
-                url: "/Account/Logout",
-                type: "POST",
-                headers: {
-                    'RequestVerificationToken': getToken(),
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                success: function() {
-                    window.location.href = "/Account/Index";
-                },
-                error: function(xhr, status, error) {
-                    console.error("Logout error:", error);
-                    window.location.href = "/Account/Index";
+                if (page) {
+                    renderEmployeeTable(filteredEmployees, parseInt(page));
+                } else if ($this.parent().attr('id') === 'prevPage' && currentPage > 1) {
+                    renderEmployeeTable(filteredEmployees, currentPage - 1);
+                } else if ($this.parent().attr('id') === 'nextPage') {
+                    const pagedData = getPagedData(filteredEmployees, currentPage, pageSize);
+                    if (currentPage < pagedData.totalPages) {
+                        renderEmployeeTable(filteredEmployees, currentPage + 1);
+                    }
                 }
             });
-        });
+
+            // Add Employee button click
+            $("#addEmployeeBtn").click(function() {
+                resetForm();
+                showModal();
+            });
+
+            // Modal hidden event - reset form when modal is closed
+            $('#employeeModal').on('hidden.bs.modal', function () {
+                resetForm();
+            });
+
+            // Logout button
+            $("#logoutBtn").click(function() {
+                $.ajax({
+                    url: "/Account/Logout",
+                    type: "POST",
+                    headers: {
+                        'RequestVerificationToken': getToken(),
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    success: function() {
+                        window.location.href = "/Account/Index";
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Logout error:", error);
+                        window.location.href = "/Account/Index";
+                    }
+                });
+            });
+
+            // Export to Excel
+            $("#exportExcelBtn").click(function() {
+                exportToExcel();
+            });
+
+            // Function to export table data to Excel
+            function exportToExcel() {
+                if (!filteredEmployees || filteredEmployees.length === 0) {
+                    showErrorMessage("No data to export");
+                    return;
+                }
+
+                let csvContent = "data:text/csv;charset=utf-8,";
+                const headers = ["ID", "Name", "Contact", "Department", "Gender", "Image Path"];
+                csvContent += headers.join(",") + "\r\n";
+
+                filteredEmployees.forEach(function(employee) {
+                    const row = [
+                        employee.id,
+                        '"' + (employee.name || '').replace(/"/g, '""') + '"',
+                        '"' + (employee.contact || '').replace(/"/g, '""') + '"',
+                        '"' + (employee.departmentName || 'N/A').replace(/"/g, '""') + '"',
+                        '"' + (employee.gender || '').replace(/"/g, '""') + '"',
+                        '"' + (employee.imagePath || 'No Image').replace(/"/g, '""') + '"'
+                    ];
+                    csvContent += row.join(",") + "\r\n";
+                });
+
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", "employees_" + new Date().toISOString().slice(0,10) + ".csv");
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                showSuccessMessage("Excel file downloaded successfully!");
+            }
 
             // Initial load
             loadAllEmployees();

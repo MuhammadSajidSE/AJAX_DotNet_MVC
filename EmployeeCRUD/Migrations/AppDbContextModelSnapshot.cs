@@ -120,6 +120,9 @@ namespace EmployeeCRUD.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("contact")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
